@@ -31,7 +31,6 @@
 * { box-sizing: border-box; margin: 0; padding: 0; }
 body { font-family: 'Lato', sans-serif; background: var(--bg); color: var(--txt); min-height: 100vh; font-size: 14px; }
 
-/* TOPBAR */
 .topbar {
   background: var(--purple);
   height: 56px; display: flex; align-items: center;
@@ -39,63 +38,35 @@ body { font-family: 'Lato', sans-serif; background: var(--bg); color: var(--txt)
   position: sticky; top: 0; z-index: 100;
   box-shadow: 0 2px 12px rgba(111,79,255,0.3);
 }
-.logo {
-  font-weight: 900; font-size: 20px; color: #fff;
-  letter-spacing: 3px; text-transform: uppercase;
-  position: relative; padding-top: 5px;
-}
-.logo::after {
-  content: ''; position: absolute;
-  top: 0; left: 0; right: 0; height: 2.5px;
-  background: var(--mint);
-}
+.logo { font-weight: 900; font-size: 20px; color: #fff; letter-spacing: 3px; text-transform: uppercase; position: relative; padding-top: 5px; }
+.logo::after { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2.5px; background: var(--mint); }
 .tsep { width: 1px; height: 22px; background: rgba(255,255,255,0.25); }
 .tlabel { font-size: 11px; font-weight: 700; color: rgba(255,255,255,0.7); letter-spacing: 1.5px; text-transform: uppercase; }
 .tcount { margin-left: auto; font-size: 11px; color: rgba(255,255,255,0.5); }
 
-/* SEARCH */
-.sbar {
-  background: var(--white);
-  border-bottom: 2px solid var(--border);
-  padding: 20px 32px 22px;
-}
+.sbar { background: var(--white); border-bottom: 2px solid var(--border); padding: 20px 32px 22px; }
 .slabel { font-size: 11px; font-weight: 700; color: var(--purple); letter-spacing: 1.5px; text-transform: uppercase; margin-bottom: 10px; }
 .swrap { position: relative; max-width: 640px; }
 #si {
   width: 100%; padding: 13px 16px 13px 46px;
   font-family: 'Lato', sans-serif; font-size: 15px;
-  background: var(--purple-faint);
-  border: 2px solid var(--border);
-  border-radius: 10px; color: var(--txt); outline: none;
-  transition: all .2s;
+  background: var(--purple-faint); border: 2px solid var(--border);
+  border-radius: 10px; color: var(--txt); outline: none; transition: all .2s;
 }
 #si:focus { border-color: var(--purple); background: var(--white); box-shadow: 0 0 0 4px rgba(111,79,255,0.08); }
 .sico { position: absolute; left: 15px; top: 50%; transform: translateY(-50%); color: var(--purple-mid); font-size: 17px; pointer-events: none; }
 
-/* DROPDOWN */
 .dd {
   position: absolute; top: calc(100% + 6px); left: 0; right: 0;
-  background: var(--white);
-  border: 1.5px solid var(--border);
-  border-radius: 12px;
-  box-shadow: 0 12px 40px rgba(111,79,255,0.12);
+  background: var(--white); border: 1.5px solid var(--border);
+  border-radius: 12px; box-shadow: 0 12px 40px rgba(111,79,255,0.12);
   display: none; max-height: 340px; overflow-y: auto; z-index: 999;
 }
 .dd.open { display: block; }
-.ddi {
-  display: flex; align-items: center; gap: 12px;
-  padding: 11px 16px; cursor: pointer;
-  border-bottom: 1px solid var(--border);
-  transition: background .1s;
-}
+.ddi { display: flex; align-items: center; gap: 12px; padding: 11px 16px; cursor: pointer; border-bottom: 1px solid var(--border); transition: background .1s; }
 .ddi:last-child { border-bottom: none; }
 .ddi:hover { background: var(--purple-faint); }
-.dav {
-  width: 36px; height: 36px; border-radius: 8px;
-  background: var(--purple); color: #fff;
-  display: flex; align-items: center; justify-content: center;
-  font-size: 12px; font-weight: 900; flex-shrink: 0;
-}
+.dav { width: 36px; height: 36px; border-radius: 8px; background: var(--purple); color: #fff; display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 900; flex-shrink: 0; }
 .dn { font-size: 13px; font-weight: 700; color: var(--txt); }
 .dm { font-size: 11px; color: var(--txt3); margin-top: 1px; }
 .dsc { margin-left: auto; font-size: 11px; font-weight: 700; padding: 3px 10px; border-radius: 20px; white-space: nowrap; flex-shrink: 0; }
@@ -103,7 +74,6 @@ body { font-family: 'Lato', sans-serif; background: var(--bg); color: var(--txt)
 .sm { background: var(--amber-lt); color: var(--amber); }
 .sl { background: var(--purple-lt); color: var(--purple-mid); }
 
-/* MAIN */
 .main { max-width: 1080px; margin: 0 auto; padding: 28px 24px 60px; }
 .empty { text-align: center; padding: 80px 20px; }
 .eico { width: 80px; height: 80px; border-radius: 24px; background: var(--purple-lt); display: flex; align-items: center; justify-content: center; font-size: 34px; margin: 0 auto 20px; }
@@ -112,26 +82,14 @@ body { font-family: 'Lato', sans-serif; background: var(--bg); color: var(--txt)
 #ficha { display: none; }
 #ficha.on { display: block; }
 
-/* COMPANY HEADER */
 .coh {
-  background: var(--purple);
-  border-radius: 14px; padding: 24px 28px;
+  background: var(--purple); border-radius: 14px; padding: 24px 28px;
   display: flex; align-items: flex-start; gap: 18px;
   margin-bottom: 18px; position: relative; overflow: hidden;
   box-shadow: 0 4px 24px rgba(111,79,255,0.25);
 }
-.coh::after {
-  content: ''; position: absolute; right: -40px; top: -40px;
-  width: 180px; height: 180px; border-radius: 50%;
-  background: rgba(199,255,217,0.1);
-}
-.coav {
-  width: 54px; height: 54px; border-radius: 12px;
-  background: rgba(255,255,255,0.2);
-  display: flex; align-items: center; justify-content: center;
-  font-size: 20px; font-weight: 900; color: #fff; flex-shrink: 0;
-  border: 2px solid rgba(255,255,255,0.3);
-}
+.coh::after { content: ''; position: absolute; right: -40px; top: -40px; width: 180px; height: 180px; border-radius: 50%; background: rgba(199,255,217,0.1); }
+.coav { width: 54px; height: 54px; border-radius: 12px; background: rgba(255,255,255,0.2); display: flex; align-items: center; justify-content: center; font-size: 20px; font-weight: 900; color: #fff; flex-shrink: 0; border: 2px solid rgba(255,255,255,0.3); }
 .coi { flex: 1; min-width: 0; }
 .con { font-size: 22px; font-weight: 900; color: #fff; margin-bottom: 8px; line-height: 1.2; }
 .tags { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 8px; }
@@ -146,48 +104,24 @@ body { font-family: 'Lato', sans-serif; background: var(--bg); color: var(--txt)
 .linea { font-size: 11px; color: rgba(255,255,255,0.55); text-align: right; line-height: 1.5; }
 .linea strong { color: var(--mint); font-size: 16px; font-weight: 900; display: block; }
 
-/* GRID */
 .g2 { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 16px; }
 .g4 { display: grid; grid-template-columns: repeat(4,1fr); gap: 12px; }
 .r2 { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
 
-/* CARD */
-.card {
-  background: var(--card);
-  border: 1.5px solid var(--border);
-  border-radius: 14px; padding: 20px 22px;
-  box-shadow: 0 1px 4px rgba(111,79,255,0.05);
-}
-.ct {
-  font-size: 10px; font-weight: 900; text-transform: uppercase;
-  letter-spacing: 1.2px; color: var(--purple);
-  margin-bottom: 16px; display: flex; align-items: center; gap: 6px;
-  padding-bottom: 10px; border-bottom: 1.5px solid var(--border);
-}
+.card { background: var(--card); border: 1.5px solid var(--border); border-radius: 14px; padding: 20px 22px; box-shadow: 0 1px 4px rgba(111,79,255,0.05); }
+.ct { font-size: 10px; font-weight: 900; text-transform: uppercase; letter-spacing: 1.2px; color: var(--purple); margin-bottom: 16px; display: flex; align-items: center; gap: 6px; padding-bottom: 10px; border-bottom: 1.5px solid var(--border); }
 
-/* CONTACT */
 .ctr { display: flex; align-items: center; gap: 14px; margin-bottom: 14px; }
-.cav2 {
-  width: 44px; height: 44px; border-radius: 50%;
-  background: var(--purple-lt);
-  display: flex; align-items: center; justify-content: center;
-  font-size: 15px; font-weight: 900; color: var(--purple); flex-shrink: 0;
-}
+.cav2 { width: 44px; height: 44px; border-radius: 50%; background: var(--purple-lt); display: flex; align-items: center; justify-content: center; font-size: 15px; font-weight: 900; color: var(--purple); flex-shrink: 0; }
 .cn2 { font-size: 15px; font-weight: 700; color: var(--txt); }
 .cr2 { font-size: 12px; color: var(--txt3); margin-top: 2px; }
 .clinks { display: flex; flex-wrap: wrap; gap: 8px; }
-.cl {
-  display: inline-flex; align-items: center; gap: 5px;
-  padding: 6px 12px; border-radius: 8px;
-  font-size: 11px; font-weight: 700; text-decoration: none;
-  transition: opacity .15s;
-}
+.cl { display: inline-flex; align-items: center; gap: 5px; padding: 6px 12px; border-radius: 8px; font-size: 11px; font-weight: 700; text-decoration: none; transition: opacity .15s; }
 .cl:hover { opacity: 0.8; }
 .clem { background: var(--purple-lt); color: var(--purple); }
 .clli { background: #EBF0FF; color: #2563EB; }
 .clph { background: var(--green-lt); color: var(--green); }
 
-/* KPIs */
 .kpi { background: var(--purple-faint); border-radius: 10px; padding: 14px 16px; border: 1px solid var(--border); }
 .kpil { font-size: 10px; font-weight: 700; color: var(--txt3); text-transform: uppercase; letter-spacing: .8px; margin-bottom: 4px; }
 .kpiv { font-size: 22px; font-weight: 900; color: var(--navy); line-height: 1; }
@@ -196,7 +130,6 @@ body { font-family: 'Lato', sans-serif; background: var(--bg); color: var(--txt)
 .ddn { background: var(--red-lt); color: var(--red); }
 .dfl { background: var(--border); color: var(--txt3); }
 
-/* CIRCULANTE */
 .hl { border-radius: 12px; padding: 16px 18px; display: flex; flex-direction: column; gap: 4px; }
 .hll { font-size: 10px; font-weight: 900; text-transform: uppercase; letter-spacing: .8px; opacity: 0.75; }
 .hlv { font-size: 28px; font-weight: 900; line-height: 1.1; }
@@ -211,21 +144,27 @@ body { font-family: 'Lato', sans-serif; background: var(--bg); color: var(--txt)
 .ggr { background: var(--green-lt); color: var(--green); border: 1px solid rgba(0,184,124,0.15); }
 
 /* AI CARDS */
-.aic {
-  background: var(--card);
-  border: 1.5px solid var(--border);
-  border-radius: 14px; padding: 20px 22px; margin-bottom: 16px;
-  box-shadow: 0 1px 4px rgba(111,79,255,0.05);
-}
+.aic { background: var(--card); border: 1.5px solid var(--border); border-radius: 14px; padding: 20px 22px; margin-bottom: 16px; box-shadow: 0 1px 4px rgba(111,79,255,0.05); }
 .aih { display: flex; align-items: center; justify-content: space-between; margin-bottom: 14px; padding-bottom: 12px; border-bottom: 1.5px solid var(--border); }
 .ait { font-size: 10px; font-weight: 900; text-transform: uppercase; letter-spacing: 1.2px; color: var(--purple); display: flex; align-items: center; gap: 6px; }
 .aib { font-size: 10px; font-weight: 700; padding: 4px 12px; border-radius: 20px; background: var(--purple); color: #fff; letter-spacing: .5px; }
 .aib.done { background: var(--green); }
-.aib.err { background: var(--red); }
+.aib.prox { background: var(--border); color: var(--txt3); }
 .aitxt { font-size: 14px; line-height: 1.75; color: var(--txt2); }
 .ald { display: flex; align-items: center; gap: 10px; color: var(--txt3); font-size: 13px; }
 .sp { width: 16px; height: 16px; border: 2px solid var(--border); border-top-color: var(--purple); border-radius: 50%; animation: spin .8s linear infinite; flex-shrink: 0; }
 @keyframes spin { to { transform: rotate(360deg); } }
+
+/* PRÓXIMAMENTE */
+.prox-box {
+  background: var(--purple-faint);
+  border: 1.5px dashed var(--purple-mid);
+  border-radius: 12px; padding: 24px 20px;
+  text-align: center; display: flex; flex-direction: column; align-items: center; gap: 10px;
+}
+.prox-icon { font-size: 28px; opacity: 0.6; }
+.prox-title { font-size: 13px; font-weight: 900; color: var(--purple); }
+.prox-desc { font-size: 12px; color: var(--txt3); line-height: 1.6; max-width: 320px; }
 
 /* SIGNALS */
 .sigs { display: flex; flex-direction: column; gap: 10px; }
@@ -241,23 +180,70 @@ body { font-family: 'Lato', sans-serif; background: var(--bg); color: var(--txt)
 .sglo .sit { color: var(--green); }
 .sig p { color: var(--txt2); font-size: 12px; margin-top: 2px; }
 
-/* OPENING */
-.opbox {
-  background: var(--purple);
-  border-radius: 12px; padding: 20px 24px;
-  position: relative; overflow: hidden;
-}
-.opbox::before {
-  content: '"'; position: absolute; top: -15px; left: 12px;
-  font-size: 120px; color: rgba(199,255,217,0.15);
-  font-family: Georgia, serif; line-height: 1;
-}
+.opbox { background: var(--purple); border-radius: 12px; padding: 20px 24px; position: relative; overflow: hidden; }
+.opbox::before { content: '"'; position: absolute; top: -15px; left: 12px; font-size: 120px; color: rgba(199,255,217,0.15); font-family: Georgia, serif; line-height: 1; }
 .optxt { font-size: 15px; line-height: 1.75; color: rgba(255,255,255,0.92); font-style: italic; position: relative; z-index: 1; }
+
+/* GUIÓN DE LLAMADA */
+.guion-section { margin-top: 24px; }
+.section-divider {
+  display: flex; align-items: center; gap: 12px; margin-bottom: 20px;
+}
+.section-divider-line { flex: 1; height: 1.5px; background: var(--border); }
+.section-divider-label {
+  font-size: 11px; font-weight: 900; color: var(--purple);
+  letter-spacing: 1.5px; text-transform: uppercase;
+  padding: 4px 14px; background: var(--purple-lt);
+  border-radius: 20px; white-space: nowrap;
+}
+
+.guion-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 16px; }
+.guion-card { background: var(--card); border: 1.5px solid var(--border); border-radius: 14px; padding: 20px 22px; box-shadow: 0 1px 4px rgba(111,79,255,0.05); }
+.guion-title { font-size: 10px; font-weight: 900; text-transform: uppercase; letter-spacing: 1.2px; color: var(--purple); margin-bottom: 16px; padding-bottom: 10px; border-bottom: 1.5px solid var(--border); display: flex; align-items: center; gap: 6px; }
+
+.pregunta-list { display: flex; flex-direction: column; gap: 10px; }
+.pregunta {
+  display: flex; gap: 12px; align-items: flex-start;
+  padding: 10px 14px; border-radius: 10px;
+  background: var(--purple-faint); border: 1px solid var(--border);
+}
+.pregunta-num {
+  width: 22px; height: 22px; border-radius: 50%;
+  background: var(--purple); color: #fff;
+  font-size: 10px; font-weight: 900;
+  display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+  margin-top: 1px;
+}
+.pregunta-txt { font-size: 13px; color: var(--txt2); line-height: 1.5; font-style: italic; }
+.pregunta-obj { font-size: 10px; color: var(--purple-mid); font-weight: 700; margin-top: 3px; text-transform: uppercase; letter-spacing: .5px; }
+
+.objecion-list { display: flex; flex-direction: column; gap: 10px; }
+.objecion { border-radius: 10px; overflow: hidden; border: 1px solid var(--border); }
+.objecion-q { background: var(--red-lt); padding: 10px 14px; font-size: 12px; font-weight: 700; color: var(--red); display: flex; align-items: center; gap: 8px; }
+.objecion-a { background: var(--purple-faint); padding: 10px 14px; font-size: 12px; color: var(--txt2); line-height: 1.5; }
+
+.apertura-guion {
+  background: linear-gradient(135deg, var(--purple), #5835E8);
+  border-radius: 14px; padding: 24px 28px; margin-bottom: 16px;
+  position: relative; overflow: hidden;
+  box-shadow: 0 4px 20px rgba(111,79,255,0.2);
+}
+.apertura-guion::before { content: '"'; position: absolute; top: -15px; left: 12px; font-size: 120px; color: rgba(199,255,217,0.12); font-family: Georgia, serif; line-height: 1; }
+.apertura-label { font-size: 10px; font-weight: 900; color: var(--mint); letter-spacing: 1.5px; text-transform: uppercase; margin-bottom: 12px; display: flex; align-items: center; gap: 6px; }
+.apertura-text { font-size: 15px; line-height: 1.8; color: rgba(255,255,255,0.92); font-style: italic; position: relative; z-index: 1; }
+.apertura-note { margin-top: 12px; font-size: 11px; color: rgba(199,255,217,0.7); font-style: normal; position: relative; z-index: 1; }
+
+.prox-inline {
+  display: inline-flex; align-items: center; gap: 5px;
+  font-size: 10px; font-weight: 700; padding: 3px 10px;
+  border-radius: 20px; background: var(--amber-lt); color: #B45309;
+  border: 1px solid rgba(245,158,11,0.2);
+}
 
 .noct { font-size: 13px; color: var(--txt3); font-style: italic; }
 .ebox { background: var(--red-lt); border-radius: 8px; padding: 10px 14px; font-size: 13px; color: var(--red); border: 1px solid rgba(232,50,74,0.15); }
 
-@media(max-width:700px) { .g2,.r2,.g4 { grid-template-columns: 1fr; } }
+@media(max-width:700px) { .g2,.r2,.g4,.guion-grid { grid-template-columns: 1fr; } }
 </style>
 </head>
 <body>
@@ -282,19 +268,66 @@ body { font-family: 'Lato', sans-serif; background: var(--bg); color: var(--txt)
   <div class="empty" id="es">
     <div class="eico">📋</div>
     <h3>Busca una empresa para ver su ficha</h3>
-    <p>Financiero · Resumen de negocio · Señales · Apertura de llamada</p>
+    <p>Financiero · Resumen IA · Señales · Guión de llamada</p>
   </div>
+
   <div id="ficha">
+    <!-- HEADER -->
     <div id="coh" class="coh" style="display:none"></div>
+
+    <!-- ROW 1: Contacto + Financiero -->
     <div class="g2" id="row1" style="display:none">
       <div class="card" id="cc"></div>
       <div class="card" id="ck"></div>
     </div>
+
+    <!-- CIRCULANTE -->
     <div class="card" id="ccir" style="margin-bottom:16px;display:none"></div>
+
+    <!-- IA: Resumen negocio -->
     <div class="aic" id="an" style="display:none"></div>
+
+    <!-- IA: Señales + Apertura -->
     <div class="r2" id="row2" style="display:none">
       <div class="aic" id="as" style="margin-bottom:0"></div>
       <div class="aic" id="ao" style="margin-bottom:0"></div>
+    </div>
+
+    <!-- GUIÓN DE LLAMADA -->
+    <div class="guion-section" id="guion" style="display:none">
+      <div class="section-divider">
+        <div class="section-divider-line"></div>
+        <div class="section-divider-label">📞 Guión de llamada</div>
+        <div class="section-divider-line"></div>
+      </div>
+
+      <!-- Apertura -->
+      <div class="apertura-guion" id="g-apertura"></div>
+
+      <!-- Preguntas + Objeciones -->
+      <div class="guion-grid">
+        <div class="guion-card">
+          <div class="guion-title">❓ Preguntas de calificación</div>
+          <div class="pregunta-list" id="g-preguntas"></div>
+        </div>
+        <div class="guion-card">
+          <div class="guion-title">🛡 Manejo de objeciones</div>
+          <div class="objecion-list" id="g-objeciones"></div>
+        </div>
+      </div>
+
+      <!-- Próximamente: feedback loop -->
+      <div class="aic" style="margin-bottom:0">
+        <div class="aih">
+          <div class="ait">🔄 Captura de feedback post-llamada</div>
+          <span class="aib prox">Próximamente</span>
+        </div>
+        <div class="prox-box">
+          <div class="prox-icon">🎙️</div>
+          <div class="prox-title">Integración con herramienta de llamadas</div>
+          <div class="prox-desc">El agente escuchará la llamada, capturará las respuestas clave del cliente y retroalimentará automáticamente el score ICP con los datos validados en tiempo real.</div>
+        </div>
+      </div>
     </div>
   </div>
 </div>
@@ -336,8 +369,8 @@ function show(id){ document.getElementById(id).style.display=''; }
 function render(c) {
   document.getElementById('es').style.display='none';
   document.getElementById('ficha').className='on';
-  ['coh','row1','ccir','an','row2'].forEach(show);
-  rHdr(c); rCt(c); rKPI(c); rCir(c); rAI(c);
+  ['coh','row1','ccir','an','row2','guion'].forEach(show);
+  rHdr(c); rCt(c); rKPI(c); rCir(c); rAI(c); rGuion(c);
 }
 
 function rHdr(c) {
@@ -395,10 +428,33 @@ function rCir(c) {
 function rAI(c) {
   if(abort) abort.abort();
   abort=new AbortController();
-  ['an','as','ao'].forEach((id,i)=>{
-    const lbls=['🌐 Resumen del negocio','⚡ Señales de oportunidad','📞 Apertura de llamada'];
-    document.getElementById(id).innerHTML=`<div class="aih"><div class="ait">${lbls[i]}</div><span class="aib">IA · Generando…</span></div><div class="ald"><div class="sp"></div>Analizando…</div>`;
-  });
+
+  // Mostrar "Próximamente" en las 3 secciones IA
+  document.getElementById('an').innerHTML=`
+    <div class="aih"><div class="ait">🌐 Resumen del negocio</div><span class="aib prox">Próximamente</span></div>
+    <div class="prox-box">
+      <div class="prox-icon">🤖</div>
+      <div class="prox-title">Análisis automático del negocio</div>
+      <div class="prox-desc">El agente analizará el dominio web de la empresa, entenderá su modelo de negocio y generará un resumen ejecutivo en menos de 30 segundos.</div>
+    </div>`;
+
+  document.getElementById('as').innerHTML=`
+    <div class="aih"><div class="ait">⚡ Señales de oportunidad</div><span class="aib prox">Próximamente</span></div>
+    <div class="prox-box">
+      <div class="prox-icon">📡</div>
+      <div class="prox-title">Detección automática de señales</div>
+      <div class="prox-desc">El agente identificará señales de necesidad de circulante basadas en los datos financieros y el perfil de negocio.</div>
+    </div>`;
+
+  document.getElementById('ao').innerHTML=`
+    <div class="aih"><div class="ait">📞 Apertura personalizada</div><span class="aib prox">Próximamente</span></div>
+    <div class="prox-box">
+      <div class="prox-icon">💬</div>
+      <div class="prox-title">Apertura generada por IA</div>
+      <div class="prox-desc">Mensaje personalizado para iniciar la llamada referenciando la situación específica de la empresa.</div>
+    </div>`;
+
+  // Intentar llamada real si API disponible
   callAI(c, abort.signal);
 }
 
@@ -407,19 +463,76 @@ async function callAI(c, signal) {
   const body={name:c.name,cnae:c.cnae_literal,sector:c.cnae_sector,web:c.web,employees:c.employees,city:c.city,ccaa:c.ccaa,ventas:c.ventas,ventas_y1:c.ventas_y1,ebitda:c.ebitda,margen:c.margen,tesoreria:c.tesoreria,deuda:c.deuda_financiera,pmc:c.pmc,pmp:c.pmp,gap:Math.round(gap),nof:c.nof};
   try {
     const res=await fetch('/api/copilot',{method:'POST',signal,headers:{'Content-Type':'application/json'},body:JSON.stringify(body)});
+    if(!res.ok) return; // mantener "próximamente" si no hay API
     const p=await res.json();
-    if(p.error) throw new Error(p.error);
+    if(p.error) return;
+    // Si API funciona, reemplazar con contenido real
     document.getElementById('an').innerHTML=`<div class="aih"><div class="ait">🌐 Resumen del negocio</div><span class="aib done">IA · Listo</span></div><div class="aitxt">${p.resumen_negocio||'—'}</div>`;
     const icons={high:'🔴',mid:'🟡',low:'🟢'},cls={high:'sghi',mid:'sgmd',low:'sglo'};
     const sigs=(p.signals||[]).slice(0,4);
     document.getElementById('as').innerHTML=`<div class="aih"><div class="ait">⚡ Señales de oportunidad</div><span class="aib done">IA · ${sigs.length} señales</span></div><div class="sigs">${sigs.map(s=>`<div class="sig ${cls[s.nivel]||'sglo'}"><span class="sii">${icons[s.nivel]||'⚪'}</span><div class="sib"><span class="sit">${s.titulo}</span><p>${s.descripcion}</p></div></div>`).join('')}</div>`;
-    document.getElementById('ao').innerHTML=`<div class="aih"><div class="ait">📞 Apertura de llamada</div><span class="aib done">IA · Listo</span></div><div class="opbox"><div class="optxt">${p.apertura||'—'}</div></div>`;
+    document.getElementById('ao').innerHTML=`<div class="aih"><div class="ait">📞 Apertura personalizada</div><span class="aib done">IA · Listo</span></div><div class="opbox"><div class="optxt">${p.apertura||'—'}</div></div>`;
   } catch(e) {
     if(e.name==='AbortError') return;
-    const err=`<div class="ebox">⚠️ ${e.message||'Error de conexión'}</div>`;
-    ['an','as','ao'].forEach(id=>{const el=document.getElementById(id);const ld=el.querySelector('.ald');if(ld)ld.outerHTML=err});
+    // mantener "próximamente" silenciosamente
   }
 }
+
+function rGuion(c) {
+  const sector = (c.cnae_sector||'').replace(/^[A-Z]\s*[–-]\s*/,'');
+  const gap = (c.pmc||0)-(c.pmp||0);
+  const nombre = c.first_name && c.first_name !== 'None' ? c.first_name : 'el/la responsable';
+
+  // Apertura contextualizada
+  let aperturaCtx = '';
+  if (gap > 60) {
+    aperturaCtx = `con un ciclo de cobro de ${Math.round(c.pmc||0)} días y un gap de tesorería importante`;
+  } else if (c.pmc > 60) {
+    aperturaCtx = `con clientes que pagan a ${Math.round(c.pmc||0)} días`;
+  } else if (sector.toLowerCase().includes('construc')) {
+    aperturaCtx = `trabajando con proyectos de construcción donde los cobros pueden demorarse`;
+  } else {
+    aperturaCtx = `en el sector de ${sector.toLowerCase()||'su industria'}`;
+  }
+
+  document.getElementById('g-apertura').innerHTML=`
+    <div class="apertura-label">🎯 Apertura sugerida <span class="prox-inline">⚡ Se personalizará con IA</span></div>
+    <div class="apertura-text">"Buenos días ${nombre}, le llamo de Kintai. Somos una fintech especializada en financiación de circulante para empresas ${aperturaCtx}. Nuestro objetivo es ayudarles a convertir sus derechos de cobro en liquidez inmediata sin afectar su CIRBE ni requerir garantías personales. ¿Tiene un momento para contarle cómo lo hacemos?"</div>
+    <div class="apertura-note">💡 Tip: menciona algo específico de su sector o situación financiera en los primeros 10 segundos.</div>`;
+
+  // Preguntas adaptadas al perfil
+  const preguntas = [
+    { q: '¿Cuáles son los plazos habituales de cobro de sus principales clientes?', obj: 'Valida PMC real' },
+    { q: '¿Trabajan con la Administración Pública o grandes corporaciones?', obj: 'Detecta deudores de calidad' },
+    { q: '¿Han tenido tensiones de tesorería en los últimos 6 meses?', obj: 'Confirma necesidad' },
+    { q: '¿Tienen actualmente financiación bancaria para circulante?', obj: 'Identifica competencia' },
+    { q: '¿Qué frena el crecimiento de la empresa en este momento?', obj: 'Abre conversación estratégica' },
+  ];
+
+  document.getElementById('g-preguntas').innerHTML = preguntas.map((p,i) => `
+    <div class="pregunta">
+      <div class="pregunta-num">${i+1}</div>
+      <div>
+        <div class="pregunta-txt">"${p.q}"</div>
+        <div class="pregunta-obj">→ ${p.obj}</div>
+      </div>
+    </div>`).join('');
+
+  // Objeciones
+  const objeciones = [
+    { q: '"Ya tenemos financiación con el banco"', a: 'Perfecto, muchos de nuestros clientes también. Kintai no reemplaza al banco, lo complementa — y lo mejor es que no afecta a su CIRBE ni consume su límite bancario.' },
+    { q: '"No es una prioridad ahora mismo"', a: 'Lo entiendo. ¿Le parece si le explico en 2 minutos cómo funciona, para que lo tenga en mente cuando sí sea el momento?' },
+    { q: '"No tenemos problemas de tesorería"', a: 'Qué bueno. Muchos clientes empiezan por eso — sin urgencia — y luego lo usan para acelerar el crecimiento sin depender del banco.' },
+    { q: '"¿Qué coste tiene?"', a: 'Depende del volumen y tipo de deudores. Lo que puedo decirle es que el coste siempre se compara con el valor de tener ese dinero disponible hoy. ¿Puedo enviarle un ejemplo con sus números?' },
+  ];
+
+  document.getElementById('g-objeciones').innerHTML = objeciones.map(o => `
+    <div class="objecion">
+      <div class="objecion-q">❝ ${o.q}</div>
+      <div class="objecion-a">💬 ${o.a}</div>
+    </div>`).join('');
+}
+
 </script>
 </body>
 </html>
