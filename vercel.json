@@ -1,0 +1,7 @@
+{
+  "functions": {
+    "api/copilot.js": {
+      "runtime": "edge"
+    }
+  }
+}
