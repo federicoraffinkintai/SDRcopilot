@@ -6,6 +6,18 @@ module.exports = async function handler(req, res) {
   if (req.method !== 'POST') return res.status(405).json({ error: 'Method not allowed' });
 
   const c = req.body;
+
+  // 1. VALIDAR ENTRADA
+  if (!c || !c.name) {
+    console.error('❌ Body inválido:', JSON.stringify(c));
+    return res.status(400).json({ error: 'Falta nombre de empresa' });
+  }
+
+  if (!process.env.OPENAI_API_KEY) {
+    console.error('❌ Falta OPENAI_API_KEY en variables de entorno');
+    return res.status(500).json({ error: 'Configuración de servidor incompleta' });
+  }
+
   const prompt = `Analiza esta empresa objetivo para Kintai y responde SOLO con JSON válido sin markdown ni explicaciones:
 
 {
@@ -40,6 +52,8 @@ Genera exactamente 3 señales de oportunidad basadas en los datos reales.
 La apertura debe referenciar algo específico de su situación financiera o sector.`;
 
   try {
+    console.log('📤 Llamando OpenAI con empresa:', c.name);
+
     const response = await fetch('https://api.openai.com/v1/chat/completions', {
       method: 'POST',
       headers: {
@@ -57,7 +71,7 @@ La apertura debe referenciar algo específico de su situación financiera o sect
 
 Tu misión es convertir datos financieros y de negocio en contexto comercial accionable para que el SDR pueda hacer una llamada personalizada y relevante.
 
-Kintai ayuda a empresas con tensiones de tesorería: empresas que cobran tarde, trabajan con la Administración Pública, tienen ciclos de cobro largos (PMC alto), o necesitan liquidez rápida sin afectar su CIRBE ni requerir garantías.
+Kintai ayuda a empresas con tensiones de tesorería: empresas que cobran tarde, trabajan con la Administración Pública, tienen ciclos de cobro largos (PMC alto), o necesitan liquidez rápida sin afectar balance.
 
 Señales de alta prioridad (high):
 - PMC superior a 90 días
@@ -85,19 +99,44 @@ Responde SIEMPRE en español. Responde ÚNICAMENTE con JSON válido, sin markdow
       })
     });
 
+    // 2. LOGUEAR RESPUESTA DE OPENAI
     const data = await response.json();
+    console.log('📥 Status OpenAI:', response.status);
+    console.log('📋 Response completa:', JSON.stringify(data, null, 2));
 
     if (!response.ok) {
-      return res.status(500).json({ error: data.error?.message || 'Error de OpenAI' });
+      console.error('❌ Error OpenAI:', data.error);
+      return res.status(500).json({ 
+        error: data.error?.message || 'Error de OpenAI',
+        details: data.error
+      });
     }
 
     const raw = data.choices?.[0]?.message?.content || '';
+    console.log('🔍 Raw content:', raw);
+
+    if (!raw) {
+      console.error('❌ Sin contenido en respuesta de OpenAI');
+      return res.status(500).json({ error: 'OpenAI devolvió respuesta vacía' });
+    }
+
     const clean = raw.replace(/^```json\s*/, '').replace(/```\s*$/, '').trim();
+    console.log('✨ Clean content:', clean);
+
     const parsed = JSON.parse(clean);
+    console.log('✅ JSON parseado exitosamente');
 
     return res.status(200).json(parsed);
 
   } catch (e) {
-    return res.status(500).json({ error: e.message || 'Error interno' });
+    console.error('❌ Error en handler:', {
+      mensaje: e.message,
+      stack: e.stack,
+      nombre: e.name
+    });
+    return res.status(500).json({ 
+      error: e.message || 'Error interno',
+      type: e.name
+    });
   }
 }
