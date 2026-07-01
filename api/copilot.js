@@ -6,137 +6,69 @@ module.exports = async function handler(req, res) {
   if (req.method !== 'POST') return res.status(405).json({ error: 'Method not allowed' });
 
   const c = req.body;
+  const gap = (c.pmc||0) - (c.pmp||0);
 
-  // 1. VALIDAR ENTRADA
-  if (!c || !c.name) {
-    console.error('❌ Body inválido:', JSON.stringify(c));
-    return res.status(400).json({ error: 'Falta nombre de empresa' });
-  }
+  const prompt = `Eres un experto en prospección comercial para Kintai, una fintech española de financiación de circulante (anticipo de facturas y pagarés).
 
-  if (!process.env.OPENAI_API_KEY) {
-    console.error('❌ Falta OPENAI_API_KEY en variables de entorno');
-    return res.status(500).json({ error: 'Configuración de servidor incompleta' });
-  }
+Analiza esta empresa y responde en JSON con exactamente estos campos:
 
-  const prompt = `Analiza esta empresa objetivo para Kintai y responde SOLO con JSON válido sin markdown ni explicaciones:
+- "actividad": 1-2 frases sobre A QUÉ SE DEDICA la empresa (su negocio principal)
+- "tipo_cliente": 1-2 frases sobre QUIÉN SON SUS CLIENTES y cómo les pagan (B2B, B2C, Administración Pública, grandes corporaciones, plazos habituales de cobro)
+- "caso_exito": Si conoces algún caso de éxito, cliente destacado o proyecto relevante de esta empresa, mencionarlo brevemente. Si no, pon null.
+- "nota_comercial": 1-2 frases sobre por qué Kintai puede ayudarles específicamente, basándote en su PMC (${c.pmc} días), gap financiero (${gap} días), sector y modelo de negocio.
+- "signals": array de 3-4 señales de oportunidad, cada una con: {"nivel":"high|mid|low","titulo":"título corto","descripcion":"explicación breve"}
+- "apertura": texto de apertura de llamada personalizado para esta empresa (2-3 frases, tono profesional y directo)
 
-{
-  "resumen_negocio": "máximo 80 palabras: qué hace la empresa, a quién vende y cómo genera ingresos",
-  "signals": [
-    {"nivel": "high|mid|low", "titulo": "string corto", "descripcion": "1-2 frases explicando por qué es relevante para Kintai"}
-  ],
-  "apertura": "2-3 frases para abrir la llamada de forma natural y personalizada, sin sonar a vendedor"
-}
-
-DATOS DE LA EMPRESA:
+Datos de la empresa:
 - Nombre: ${c.name}
-- Sector: ${c.cnae}
-- Web: ${c.web || 'no disponible'}
-- Empleados: ${c.employees || 'no disponible'}
-- Ubicación: ${c.city}, ${c.ccaa}
-
-FINANCIERO (en miles €):
-- Ventas: ${c.ventas}k€ (año anterior: ${c.ventas_y1}k€)
+- Actividad: ${c.cnae}
+- Sector: ${c.sector}
+- Web: ${c.web||'no disponible'}
+- Ciudad: ${c.city}, ${c.ccaa}
+- Empleados: ${c.employees}
+- Ventas: ${c.ventas}k€ (año ant: ${c.ventas_y1}k€)
 - EBITDA: ${c.ebitda}k€
-- Margen neto: ${c.margen}%
+- Margen: ${c.margen}%
+- PMC (días de cobro): ${c.pmc} días
+- PMP (días de pago): ${c.pmp} días
+- Gap PMC-PMP: ${gap} días
 - Tesorería: ${c.tesoreria}k€
+- NOF: ${c.nof}k€
 - Deuda financiera: ${c.deuda}k€
 
-CIRCULANTE:
-- PMC (días cobro): ${c.pmc} días
-- PMP (días pago): ${c.pmp} días
-- Gap PMC-PMP: ${c.gap} días
-- NOF: ${c.nof}k€
-
-Genera exactamente 3 señales de oportunidad basadas en los datos reales.
-La apertura debe referenciar algo específico de su situación financiera o sector.`;
+Responde SOLO con el JSON, sin texto adicional.`;
 
   try {
-    console.log('📤 Llamando OpenAI con empresa:', c.name);
-
     const response = await fetch('https://api.openai.com/v1/chat/completions', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        'Authorization': `Bearer ${process.env.OPENAI_API_KEY}`,
+        'Authorization': `Bearer ${process.env.OPENAI_API_KEY}`
       },
       body: JSON.stringify({
         model: 'gpt-4o',
-        temperature: 0.4,
         max_tokens: 1000,
-        messages: [
-          {
-            role: 'system',
-            content: `Eres el agente de análisis comercial del SDR Copilot de Kintai, una fintech española especializada en anticipo de facturación y líneas de circulante para empresas.
-
-Tu misión es convertir datos financieros y de negocio en contexto comercial accionable para que el SDR pueda hacer una llamada personalizada y relevante.
-
-Kintai ayuda a empresas con tensiones de tesorería: empresas que cobran tarde, trabajan con la Administración Pública, tienen ciclos de cobro largos (PMC alto), o necesitan liquidez rápida sin afectar balance.
-
-Señales de alta prioridad (high):
-- PMC superior a 90 días
-- Gap PMC-PMP superior a 60 días
-- Tesorería baja respecto a ventas
-- Deuda financiera alta
-- Sector con pagadores lentos: construcción, servicios públicos, ingeniería, distribución
-
-Señales medias (mid):
-- PMC entre 60-90 días
-- Gap entre 30-60 días
-- Ventas creciendo pero EBITDA estable o bajando
-
-Señales bajas (low):
-- Empresa con buena tesorería pero PMC moderado
-- Oportunidades de crecimiento que podrían necesitar circulante
-
-Responde SIEMPRE en español. Responde ÚNICAMENTE con JSON válido, sin markdown, sin explicaciones fuera del JSON.`
-          },
-          {
-            role: 'user',
-            content: prompt
-          }
-        ]
+        temperature: 0.7,
+        messages: [{ role: 'user', content: prompt }]
       })
     });
 
-    // 2. LOGUEAR RESPUESTA DE OPENAI
-    const data = await response.json();
-    console.log('📥 Status OpenAI:', response.status);
-    console.log('📋 Response completa:', JSON.stringify(data, null, 2));
-
     if (!response.ok) {
-      console.error('❌ Error OpenAI:', data.error);
-      return res.status(500).json({ 
-        error: data.error?.message || 'Error de OpenAI',
-        details: data.error
-      });
+      const err = await response.text();
+      return res.status(500).json({ error: 'OpenAI error', detail: err });
     }
 
-    const raw = data.choices?.[0]?.message?.content || '';
-    console.log('🔍 Raw content:', raw);
-
-    if (!raw) {
-      console.error('❌ Sin contenido en respuesta de OpenAI');
-      return res.status(500).json({ error: 'OpenAI devolvió respuesta vacía' });
+    const data = await response.json();
+    let text = data.choices?.[0]?.message?.content || '';
+    text = text.replace(/```json\n?/g,'').replace(/```\n?/g,'').trim();
+    
+    try {
+      const parsed = JSON.parse(text);
+      return res.status(200).json(parsed);
+    } catch {
+      return res.status(200).json({ resumen_negocio: text, signals: [], apertura: '' });
     }
-
-    const clean = raw.replace(/^```json\s*/, '').replace(/```\s*$/, '').trim();
-    console.log('✨ Clean content:', clean);
-
-    const parsed = JSON.parse(clean);
-    console.log('✅ JSON parseado exitosamente');
-
-    return res.status(200).json(parsed);
-
   } catch (e) {
-    console.error('❌ Error en handler:', {
-      mensaje: e.message,
-      stack: e.stack,
-      nombre: e.name
-    });
-    return res.status(500).json({ 
-      error: e.message || 'Error interno',
-      type: e.name
-    });
+    return res.status(500).json({ error: e.message });
   }
-}
+};
