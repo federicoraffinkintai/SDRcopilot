@@ -607,11 +607,32 @@ function rAI(c) {
 async function callAI(c, signal) {
   const gap=(c.pmc||0)-(c.pmp||0);
   const body={name:c.name,cnae:c.cnae_literal,sector:c.cnae_sector,web:c.web,employees:c.employees,city:c.city,ccaa:c.ccaa,ventas:c.ventas,ventas_y1:c.ventas_y1,ebitda:c.ebitda,margen:c.margen,tesoreria:c.tesoreria,deuda:c.deuda_financiera,pmc:c.pmc,pmp:c.pmp,gap:Math.round(gap),nof:c.nof};
+
+  // Mostrar estado: llamando API
+  document.getElementById('an').innerHTML=`
+    <div class="aih"><div class="ait">🌐 Resumen del negocio</div><span class="aib" style="background:#F59E0B">⏳ Llamando API…</span></div>
+    <div style="font-size:13px;color:var(--txt3);padding:8px 0">Enviando solicitud a /api/copilot…</div>`;
+
   try {
     const res=await fetch('/api/copilot',{method:'POST',signal,headers:{'Content-Type':'application/json'},body:JSON.stringify(body)});
-    if(!res.ok) { showProximamente(); return; }
+    
+    if(!res.ok) {
+      const errText = await res.text();
+      document.getElementById('an').innerHTML=`
+        <div class="aih"><div class="ait">🌐 Resumen del negocio</div><span class="aib" style="background:var(--red)">Error ${res.status}</span></div>
+        <div class="ebox">API respondió ${res.status}: ${errText.substring(0,200)}</div>`;
+      document.getElementById('as').innerHTML=`<div class="aih"><div class="ait">⚡ Señales de oportunidad</div><span class="aib prox">Error API</span></div><div class="ebox">Ver error en Resumen del negocio</div>`;
+      return;
+    }
+
     const p=await res.json();
-    if(p.error) { showProximamente(); return; }
+
+    if(p.error) {
+      document.getElementById('an').innerHTML=`
+        <div class="aih"><div class="ait">🌐 Resumen del negocio</div><span class="aib" style="background:var(--red)">Error IA</span></div>
+        <div class="ebox">Error de OpenAI: ${JSON.stringify(p.error).substring(0,200)}</div>`;
+      return;
+    }
 
     // RESUMEN — structured fields from API
     const resumenHTML = `<div class="resumen-grid">
@@ -635,7 +656,14 @@ async function callAI(c, signal) {
 
   } catch(e) {
     if(e.name==='AbortError') return;
-    showProximamente();
+    document.getElementById('an').innerHTML=`
+      <div class="aih"><div class="ait">🌐 Resumen del negocio</div><span class="aib" style="background:var(--red)">Error de red</span></div>
+      <div class="ebox">❌ Error al llamar /api/copilot: ${e.message}<br><br>
+      <strong>Posibles causas:</strong><br>
+      • La función /api/copilot no está desplegada en Vercel<br>
+      • La OPENAI_API_KEY no está configurada<br>
+      • Error de CORS o red</div>`;
+    document.getElementById('as').innerHTML=`<div class="aih"><div class="ait">⚡ Señales de oportunidad</div><span class="aib prox">Sin conexión API</span></div><div class="ebox">Ver diagnóstico en Resumen del negocio</div>`;
   }
 }
 
