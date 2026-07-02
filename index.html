@@ -129,7 +129,7 @@ body { font-family: 'Lato', sans-serif; background: var(--bg); color: var(--txt)
 .coh {
   background: var(--purple); border-radius: 14px; padding: 24px 28px;
   display: flex; align-items: flex-start; gap: 18px;
-  margin-bottom: 18px; position: relative; overflow: hidden;
+  position: relative; overflow: hidden;
   box-shadow: 0 4px 24px rgba(111,79,255,0.25);
 }
 .coh::after { content: ''; position: absolute; right: -40px; top: -40px; width: 180px; height: 180px; border-radius: 50%; background: rgba(199,255,217,0.1); }
@@ -347,16 +347,22 @@ body { font-family: 'Lato', sans-serif; background: var(--bg); color: var(--txt)
     </div>
 
     <div id="ficha">
-      <div id="coh" class="coh" style="display:none"></div>
-      <div class="g2" id="row1" style="display:none">
+      <!-- ROW 1: Info empresa + Contacto -->
+      <div class="g2" id="row1" style="display:none;margin-bottom:16px">
+        <div id="coh" class="coh" style="margin-bottom:0"></div>
         <div class="card" id="cc"></div>
-        <div class="card" id="ck"></div>
       </div>
-      <div class="card" id="ccir" style="margin-bottom:16px;display:none"></div>
-      <div class="aic" id="an" style="display:none"></div>
-      <div class="r2" id="row2" style="display:none">
+
+      <!-- ROW 2: Resumen negocio + Señales -->
+      <div class="r2" id="row2" style="display:none;margin-bottom:16px">
+        <div class="aic" id="an" style="margin-bottom:0"></div>
         <div class="aic" id="as" style="margin-bottom:0"></div>
-        <div class="aic" id="ao" style="margin-bottom:0"></div>
+      </div>
+
+      <!-- ROW 3: Financiero + Circulante -->
+      <div class="g2" id="row3" style="display:none;margin-bottom:16px">
+        <div class="card" id="ck"></div>
+        <div class="card" id="ccir"></div>
       </div>
 
       <!-- GUIÓN DE LLAMADA -->
@@ -522,7 +528,7 @@ function show(id){ document.getElementById(id).style.display=''; }
 function render(c) {
   document.getElementById('es').style.display='none';
   document.getElementById('ficha').className='on';
-  ['coh','row1','ccir','an','row2','guion'].forEach(show);
+  ['row1','row2','row3','guion'].forEach(show);
   rHdr(c); rCt(c); rKPI(c); rCir(c); rAI(c); rGuion(c);
 }
 
@@ -668,10 +674,6 @@ async function callAI(c, signal) {
       <div class="aih"><div class="ait">⚡ Señales de oportunidad</div><span class="aib done">IA · ${sigs.length} señales</span></div>
       <div class="sigs">${sigs.map(s=>`<div class="sig ${cls[s.nivel]||'sglo'}"><span class="sii">${icons[s.nivel]||'⚪'}</span><div class="sib"><span class="sit">${s.titulo}</span><p>${s.descripcion}</p></div></div>`).join('')}</div>`;
 
-    // APERTURA
-    document.getElementById('ao').innerHTML=`
-      <div class="aih"><div class="ait">📞 Apertura personalizada</div><span class="aib done">IA · Listo</span></div>
-      <div class="opbox"><div class="optxt">${p.apertura||'—'}</div></div>`;
 
   } catch(e) {
     if(e.name==='AbortError') return;
@@ -688,10 +690,7 @@ function showProximamente() {
     <div class="aih"><div class="ait">⚡ Señales de oportunidad</div><span class="aib prox">Próximamente</span></div>
     <div class="prox-box"><div class="prox-icon">📡</div><div class="prox-title">Detección automática de señales</div>
     <div class="prox-desc">Identificará señales de necesidad de circulante basadas en los datos financieros y el perfil del negocio.</div></div>`;
-  document.getElementById('ao').innerHTML=`
-    <div class="aih"><div class="ait">📞 Apertura personalizada</div><span class="aib prox">Próximamente</span></div>
-    <div class="prox-box"><div class="prox-icon">💬</div><div class="prox-title">Apertura generada por IA</div>
-    <div class="prox-desc">Mensaje personalizado para iniciar la llamada referenciando la situación específica de la empresa.</div></div>`;
+
 }
 
 function rGuion(c) {
@@ -708,11 +707,6 @@ function rGuion(c) {
   } else {
     aperturaCtx = `en el sector de ${(c._seg||'su industria').toLowerCase()}`;
   }
-
-  document.getElementById('g-apertura').innerHTML=`
-    <div class="apertura-label">🎯 Apertura sugerida <span class="prox-inline">⚡ Se personalizará con IA</span></div>
-    <div class="apertura-text">"Buenos días ${nombre}, le llamo de Kintai. Somos una fintech especializada en financiación de circulante para empresas ${aperturaCtx}. Nuestro objetivo es ayudarles a convertir sus derechos de cobro en liquidez inmediata sin afectar su CIRBE ni requerir garantías personales. ¿Tiene un momento para contarle cómo lo hacemos?"</div>
-    <div class="apertura-note">💡 Tip: menciona algo específico de su sector o situación financiera en los primeros 10 segundos.</div>`;
 
   // Preguntas y objeciones — en construcción
   document.getElementById('g-preguntas').innerHTML = `
