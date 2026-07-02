@@ -613,59 +613,17 @@ async function callAI(c, signal) {
     const p=await res.json();
     if(p.error) { showProximamente(); return; }
 
-    // RESUMEN — structured format
-    const resumen = p.resumen_negocio || '';
-    // Parse structured fields if present, else show as text
-    let resumenHTML = '';
-    if (p.actividad || p.tipo_cliente || p.caso_exito || p.nota_comercial) {
-      resumenHTML = `<div class="resumen-grid">
-        ${p.actividad ? `<div class="resumen-item"><div class="resumen-item-label">🏭 A qué se dedica</div><div class="resumen-item-val">${p.actividad}</div></div>` : ''}
-        ${p.tipo_cliente ? `<div class="resumen-item"><div class="resumen-item-label">🤝 Tipo de cliente / Quién les paga</div><div class="resumen-item-val">${p.tipo_cliente}</div></div>` : ''}
-        ${p.caso_exito ? `<div class="resumen-item"><div class="resumen-item-label">🏆 Caso de éxito relevante</div><div class="resumen-item-val">${p.caso_exito}</div></div>` : ''}
-        ${p.nota_comercial ? `<div class="resumen-item" style="border-left:3px solid var(--purple);background:var(--purple-lt)"><div class="resumen-item-label">💡 Nota comercial Kintai</div><div class="resumen-item-val">${p.nota_comercial}</div></div>` : ''}
-      </div>`;
-    } else if (resumen) {
-      // Try to parse from text — split by known markers
-      const lines = resumen.split('\n').filter(l => l.trim());
-      resumenHTML = `<div class="resumen-grid">`;
-      let current = { label: '🏭 Análisis del negocio', content: [] };
-      const sections = [];
-      lines.forEach(l => {
-        if (l.includes('se dedica') || l.includes('actividad') || l.toLowerCase().includes('a qué')) {
-          if (current.content.length) sections.push({...current});
-          current = { label: '🏭 A qué se dedica', content: [l] };
-        } else if (l.includes('cliente') || l.includes('pagan') || l.includes('B2B') || l.includes('quién')) {
-          if (current.content.length) sections.push({...current});
-          current = { label: '🤝 Tipo de cliente / Quién les paga', content: [l] };
-        } else if (l.includes('éxito') || l.includes('caso') || l.includes('cliente destacado')) {
-          if (current.content.length) sections.push({...current});
-          current = { label: '🏆 Caso de éxito relevante', content: [l] };
-        } else if (l.includes('Kintai') || l.includes('circulante') || l.includes('PMC') || l.includes('oportunidad')) {
-          if (current.content.length) sections.push({...current});
-          current = { label: '💡 Nota comercial Kintai', content: [l] };
-        } else {
-          current.content.push(l);
-        }
-      });
-      if (current.content.length) sections.push(current);
-
-      if (sections.length > 1) {
-        sections.forEach(s => {
-          const isKintai = s.label.includes('Nota');
-          resumenHTML += `<div class="resumen-item"${isKintai?' style="border-left:3px solid var(--purple);background:var(--purple-lt)"':''}>
-            <div class="resumen-item-label">${s.label}</div>
-            <div class="resumen-item-val">${s.content.join(' ').trim()}</div>
-          </div>`;
-        });
-      } else {
-        resumenHTML += `<div class="resumen-item"><div class="resumen-item-val">${resumen}</div></div>`;
-      }
-      resumenHTML += `</div>`;
-    }
+    // RESUMEN — structured fields from API
+    const resumenHTML = `<div class="resumen-grid">
+      ${p.actividad ? `<div class="resumen-item"><div class="resumen-item-label">🏭 A qué se dedica</div><div class="resumen-item-val">${p.actividad}</div></div>` : ''}
+      ${p.tipo_cliente ? `<div class="resumen-item"><div class="resumen-item-label">🤝 Tipo de cliente / Quién les paga</div><div class="resumen-item-val">${p.tipo_cliente}</div></div>` : ''}
+      ${p.caso_exito ? `<div class="resumen-item"><div class="resumen-item-label">🏆 Caso de éxito relevante</div><div class="resumen-item-val">${p.caso_exito}</div></div>` : ''}
+      ${p.nota_comercial ? `<div class="resumen-item" style="border-left:3px solid var(--purple);background:var(--purple-lt)"><div class="resumen-item-label">💡 Nota comercial Kintai</div><div class="resumen-item-val">${p.nota_comercial}</div></div>` : ''}
+    </div>`;
 
     document.getElementById('an').innerHTML=`
       <div class="aih"><div class="ait">🌐 Resumen del negocio</div><span class="aib done">IA · Listo</span></div>
-      ${resumenHTML || '<div class="noct">Sin información disponible</div>'}`;
+      ${resumenHTML}`;
 
     // SEÑALES
     const icons={high:'🔴',mid:'🟡',low:'🟢'},cls={high:'sghi',mid:'sgmd',low:'sglo'};
