@@ -655,6 +655,15 @@ function renderList() {
 }
 
 // EVENTS
+renderList();
+}
+
+// Show loading state immediately
+document.getElementById('slist').innerHTML = '<div style="padding:24px 16px;text-align:center;color:var(--txt3);font-size:13px"><div style="font-size:24px;margin-bottom:8px">⏳</div>Cargando empresas…</div>';
+document.getElementById('fc').textContent = 'Cargando…';
+document.getElementById('tc').textContent = 'Cargando…';
+
+// Register ALL listeners ONCE here (not inside initApp)
 document.getElementById('si').addEventListener('input', e => { searchQ = nr(e.target.value.trim()); renderList(); });
 document.getElementById('f-owner').addEventListener('change', e => { filterOwner = e.target.value; renderList(); });
 document.getElementById('f-score').addEventListener('change', e => { filterScore = e.target.value; renderList(); });
@@ -667,22 +676,12 @@ document.querySelectorAll('.sort-btn').forEach(btn => {
     renderList();
   });
 });
-
-// Event delegation for company list clicks
 document.getElementById('slist').addEventListener('click', function(e) {
   const item = e.target.closest('[data-nif]');
   if (!item) return;
   const nif = item.getAttribute('data-nif');
   pickByNif(nif);
 });
-
-renderList();
-}
-
-// Show loading state immediately
-document.getElementById('slist').innerHTML = '<div style="padding:24px 16px;text-align:center;color:var(--txt3);font-size:13px"><div style="font-size:24px;margin-bottom:8px">⏳</div>Cargando empresas…</div>';
-document.getElementById('fc').textContent = 'Cargando…';
-document.getElementById('tc').textContent = 'Cargando…';
 
 // Load from Sheets first, then init
 loadFromSheets();
