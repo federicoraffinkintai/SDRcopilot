@@ -320,17 +320,17 @@ body { font-family: 'Lato', sans-serif; background: var(--bg); color: var(--txt)
         </select>
       </div>
       <div class="filter-row">
-        <span class="filter-label">Segmento</span>
-        <select class="filter-sel" id="f-seg">
-          <option value="">Todos</option>
+        <span class="filter-label">Industria</span>
+        <select class="filter-sel" id="f-ind">
+          <option value="">Todas</option>
         </select>
       </div>
       <div class="sort-row">
         <span style="font-size: 12px;font-weight:700;color:var(--txt3);align-self:center">Ordenar:</span>
         <button class="sort-btn active" data-sort="score">Score ↓</button>
         <button class="sort-btn" data-sort="score-asc">Score ↑</button>
-        <button class="sort-btn" data-sort="name">Nombre</button>
-        <button class="sort-btn" data-sort="seg">Segmento</button>
+        <button class="sort-btn" data-sort="ind">Industria ↓</button>
+        <button class="sort-btn" data-sort="ind-asc">Industria ↑</button>
       </div>
     </div>
     <div class="filter-count" id="fc"></div>
@@ -490,7 +490,7 @@ async function loadFromSheets() {
           'L –': 'Inmobiliario', 'S –': 'Otros servicios',
         };
 
-        const num = v => { const n = parseFloat((v||'').toString().replace(',','.')); return isNaN(n)?null:n; };
+        const num = v => { const s=(v||'').toString().replace(',','.').replace('%','').trim(); const n=parseFloat(s); return isNaN(n)?null:n; };
         
         const newData = sabiRows.slice(1).filter(r => r[iNif]).map(row => {
           const nif = (row[iNif]||'').trim();
@@ -504,7 +504,7 @@ async function loadFromSheets() {
             phone: row[iPhone]||'', first_name: row[iFirstName]||'',
             last_name: row[iLastName]||'', dm_role: row[iRole]||'',
             email: hs.email || '', linkedin: '',
-            score_global: num(row[iScore]), linea_potencial: num(row[iLinea]),
+            score_global: (()=>{ const s=num(row[iScore]); return s==null?null:s>1?s/100:s; })(), linea_potencial: num(row[iLinea]),
             ventas: num(row[iVentas]), ventas_y1: num(row[iVentas1]),
             ebitda: num(row[iEbitda]), ebitda_y1: num(row[iEbitda1]),
             margen: num(row[iMargen]), tesoreria: num(row[iTeso]),
@@ -574,11 +574,13 @@ COMPANIES.forEach(c => {
   c._owner = c.owner || '';
 });
 
-// Populate filters
+// Populate filters (clear first to avoid duplicates on reload)
 const owners = [...new Set(COMPANIES.map(c => c._owner).filter(Boolean))].sort();
 const segs = [...new Set(COMPANIES.map(c => c._seg))].sort();
 const fOwner = document.getElementById('f-owner');
-const fSeg = document.getElementById('f-seg');
+const fSeg = document.getElementById('f-ind');
+while (fOwner.options.length > 1) fOwner.remove(1);
+while (fSeg.options.length > 1) fSeg.remove(1);
 owners.forEach(o => { const opt = document.createElement('option'); opt.value = o; opt.textContent = o; fOwner.appendChild(opt); });
 segs.forEach(s => { const opt = document.createElement('option'); opt.value = s; opt.textContent = s; fSeg.appendChild(opt); });
 
@@ -601,14 +603,14 @@ let currentSort = 'score';
 let searchQ = '';
 let filterOwner = '';
 let filterScore = '';
-let filterSeg = '';
+let filterInd = '';
 
 // FILTER + SORT + RENDER LIST
 function getFiltered() {
   let list = COMPANIES.filter(c => {
     if (searchQ && !nr(c.name).includes(searchQ) && !nr(c.nif).includes(searchQ) && !nr(c.cnae_literal).includes(searchQ) && !nr(c.city).includes(searchQ)) return false;
     if (filterOwner && c._owner !== filterOwner) return false;
-    if (filterSeg && c._seg !== filterSeg) return false;
+    if (filterInd && c._seg !== filterInd) return false;
     if (filterScore) {
       const p = (c.score_global||0)*100;
       if (filterScore==='high' && p < 35) return false;
@@ -621,8 +623,9 @@ function getFiltered() {
   list.sort((a,b) => {
     if (currentSort === 'score') return (b.score_global||0)-(a.score_global||0);
     if (currentSort === 'score-asc') return (a.score_global||0)-(b.score_global||0);
-    if (currentSort === 'name') return a.name.localeCompare(b.name);
-    if (currentSort === 'seg') return a._seg.localeCompare(b._seg);
+    
+    if (currentSort === 'ind') return a._seg.localeCompare(b._seg);
+    if (currentSort === 'ind-asc') return b._seg.localeCompare(a._seg);
     return 0;
   });
   return list;
@@ -632,8 +635,8 @@ function renderList() {
   const list = getFiltered();
   document.getElementById('fc').textContent = list.length + ' de ' + COMPANIES.length + ' empresas';
   const ul = document.getElementById('slist');
-  ul.innerHTML = list.map(c => `
-    <div class="sli${c.nif===currentNif?' active':''}" onclick="pick('${c.nif}')">
+  ul.innerHTML = list.map((c,i) => `
+    <div class="sli${c.nif===currentNif?' active':''}" data-idx="${list.indexOf(c)}" data-nif="${(c.nif||'').replace(/"/g,'')}" onclick="pickByNif(this.dataset.nif)">
       <div class="sli-av">${ii(c.name)}</div>
       <div class="sli-info">
         <div class="sli-name">${c.name}</div>
@@ -647,7 +650,7 @@ function renderList() {
 document.getElementById('si').addEventListener('input', e => { searchQ = nr(e.target.value.trim()); renderList(); });
 document.getElementById('f-owner').addEventListener('change', e => { filterOwner = e.target.value; renderList(); });
 document.getElementById('f-score').addEventListener('change', e => { filterScore = e.target.value; renderList(); });
-document.getElementById('f-seg').addEventListener('change', e => { filterSeg = e.target.value; renderList(); });
+document.getElementById('f-ind').addEventListener('change', e => { filterInd = e.target.value; renderList(); });
 document.querySelectorAll('.sort-btn').forEach(btn => {
   btn.addEventListener('click', () => {
     document.querySelectorAll('.sort-btn').forEach(b => b.classList.remove('active'));
@@ -673,6 +676,15 @@ function pick(nif) {
   renderList();
   render(c);
   // scroll main to top
+  document.querySelector('.main-content').scrollTop = 0;
+}
+
+function pickByNif(nif) {
+  const c = COMPANIES.find(x => (x.nif||'').trim() === (nif||'').trim());
+  if (!c) { console.warn('Company not found for NIF:', nif); return; }
+  currentNif = (c.nif||'').trim();
+  renderList();
+  render(c);
   document.querySelector('.main-content').scrollTop = 0;
 }
 
