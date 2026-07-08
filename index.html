@@ -347,6 +347,7 @@ body { font-family: 'Lato', sans-serif; background: var(--bg); color: var(--txt)
     </div>
 
     <div id="ficha">
+      <div id="dbg"></div>
       <!-- ROW 1: Info empresa + Contacto -->
       <div class="g2" id="row1" style="display:none;margin-bottom:16px">
         <div id="coh" class="coh" style="margin-bottom:0"></div>
@@ -680,8 +681,20 @@ function pick(nif) {
 }
 
 function pickByNif(nif) {
-  const c = COMPANIES.find(x => (x.nif||'').trim() === (nif||'').trim());
-  if (!c) { console.warn('Company not found for NIF:', nif); return; }
+  const trimNif = (nif||'').trim();
+  const c = COMPANIES.find(x => (x.nif||'').trim() === trimNif);
+  
+  // Show debug info regardless
+  const dbg = document.getElementById('dbg');
+  if (!c) {
+    if (dbg) dbg.innerHTML = `<div style="background:#fef0f2;color:#e8324a;font-size:12px;padding:12px 16px;border-radius:8px;margin-bottom:12px;font-family:monospace;border:1px solid rgba(232,50,74,0.3)">
+      ❌ NIF <strong>"${trimNif}"</strong> no encontrado en COMPANIES (${COMPANIES.length} empresas)<br>
+      <small>Primer NIF: "${(COMPANIES[0]?.nif||'').trim()}" | Tipo: ${typeof COMPANIES[0]?.nif}</small>
+    </div>`;
+    document.getElementById('es').style.display='none';
+    document.getElementById('ficha').className='on';
+    return;
+  }
   currentNif = (c.nif||'').trim();
   renderList();
   render(c);
@@ -691,10 +704,35 @@ function pickByNif(nif) {
 function show(id){ document.getElementById(id).style.display=''; }
 
 function render(c) {
-  document.getElementById('es').style.display='none';
+  try {
+    document.getElementById('es').style.display='none';
+    document.getElementById('ficha').className='on';
+    ['row1','row2','row3','guion'].forEach(show);
+    
+    // Debug: show what we got
+    const dbg = document.getElementById('dbg');
+    if (dbg) dbg.innerHTML = `<div style="background:#1a1a2e;color:#c7ffd9;font-size:11px;padding:8px 12px;border-radius:8px;margin-bottom:12px;font-family:monospace">
+      🔍 DEBUG: ${c.name} | NIF: ${c.nif} | score: ${c.score_global} | pmc: ${c.pmc} | ventas: ${c.ventas}
+    </div>`;
+
+    try { rHdr(c); } catch(e) { showErr('rHdr',e); return; }
+    try { rCt(c); } catch(e) { showErr('rCt',e); return; }
+    try { rKPI(c); } catch(e) { showErr('rKPI',e); return; }
+    try { rCir(c); } catch(e) { showErr('rCir',e); return; }
+    try { rAI(c); } catch(e) { showErr('rAI',e); return; }
+    try { rGuion(c); } catch(e) { showErr('rGuion',e); return; }
+  } catch(e) {
+    showErr('render', e);
+  }
+}
+
+function showErr(fn, e) {
   document.getElementById('ficha').className='on';
-  ['row1','row2','row3','guion'].forEach(show);
-  rHdr(c); rCt(c); rKPI(c); rCir(c); rAI(c); rGuion(c);
+  const dbg = document.getElementById('dbg');
+  if (dbg) dbg.innerHTML = `<div style="background:#fef0f2;color:#e8324a;font-size:12px;padding:12px 16px;border-radius:8px;margin-bottom:12px;font-family:monospace;border:1px solid rgba(232,50,74,0.3)">
+    ❌ Error en <strong>${fn}()</strong>: ${e.message}<br>
+    <small>${e.stack ? e.stack.split('\n')[1] : ''}</small>
+  </div>`;
 }
 
 function rHdr(c) {
