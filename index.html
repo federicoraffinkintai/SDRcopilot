@@ -637,7 +637,7 @@ function renderList() {
   document.getElementById('fc').textContent = list.length + ' de ' + COMPANIES.length + ' empresas';
   const ul = document.getElementById('slist');
   ul.innerHTML = list.map((c,i) => `
-    <div class="sli${c.nif===currentNif?' active':''}" data-idx="${list.indexOf(c)}" data-nif="${(c.nif||'').replace(/"/g,'')}" onclick="pickByNif(this.dataset.nif)">
+    <div class="sli${c.nif===currentNif?' active':''}" data-nif="${(c.nif||'').trim().replace(/"/g,'&quot;')}">
       <div class="sli-av">${ii(c.name)}</div>
       <div class="sli-info">
         <div class="sli-name">${c.name}</div>
@@ -659,6 +659,14 @@ document.querySelectorAll('.sort-btn').forEach(btn => {
     currentSort = btn.dataset.sort;
     renderList();
   });
+});
+
+// Event delegation for company list clicks
+document.getElementById('slist').addEventListener('click', function(e) {
+  const item = e.target.closest('[data-nif]');
+  if (!item) return;
+  const nif = item.getAttribute('data-nif');
+  pickByNif(nif);
 });
 
 renderList();
